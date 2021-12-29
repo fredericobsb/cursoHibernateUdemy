@@ -16,18 +16,27 @@ public class Credential {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="CREDENTIAL_ID")
 	public Long credentialId;
-	
-	@Column(name = "USERNAME")
-	private String userName;
-	
-	@Column(name = "PASSWORD")
-	private String password;
-	
-	//aula34 -> OneToOne unidirecional - NÃO é possivel acessar a credencial a partir do usuario: não mapeou nada na entidade usuario, só aqui.
-	@OneToOne(cascade = CascadeType.ALL)
+
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="USER_ID")
-	private User user;
+	public User user;
+	
+	@Column(name="USERNAME")
+	private String username;
+
+	@Column(name="PASSWORD")
+	private String password;
+
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public Long getCredentialId() {
 		return credentialId;
@@ -37,12 +46,12 @@ public class Credential {
 		this.credentialId = credentialId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -51,13 +60,5 @@ public class Credential {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 }

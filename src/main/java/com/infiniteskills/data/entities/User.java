@@ -29,6 +29,9 @@ public class User {
 	@Column(name="USER_ID")
 	private Long userId;
 	
+	@OneToOne(mappedBy = "user")
+	private Credential credential;
+	
 	@Column(name="FIRST_NAME")
 	private String firstName;
 	
@@ -56,23 +59,19 @@ public class User {
 	@Formula("lower(datediff(curdate(), birth_date)/365)")
 	private int age;
 	
-	/* Aula 35 - OneToOne Bidirecional -> NÃO DEVE pôr @JoinColumn nem Cascade desse lado do 
-	relacioonamento, para nao criar um loop infinito de persistencia. */
-	@OneToOne(mappedBy="user")
-	private Credential credential;
-	
-	/*
-	@Embedded
-	@AttributeOverrides({@AttributeOverride(name="addressLine1", column = @Column(name="USER_ADDRESS_LINE1")),
-		@AttributeOverride(name="addressLine2", column = @Column(name="USER_ADDRESS_LINE2"))})
-	private Address address;
-	*/
 	
 	@ElementCollection
-	@CollectionTable(name="USER_ADDRESS", joinColumns = @JoinColumn(name="USER_ID"))
-	@AttributeOverrides({@AttributeOverride(name="addressLine1", column = @Column(name="USER_ADDRESS_LINE1")),
-		@AttributeOverride(name="addressLine2", column = @Column(name="USER_ADDRESS_LINE2"))})
-	private List<Address> address = new ArrayList<Address>();
+	@CollectionTable(name = "USER_ADDRESS", joinColumns = @JoinColumn(name = "USER_ID"))
+	@AttributeOverrides({
+			@AttributeOverride(name = "addressLine1", column = @Column(name = "USER_ADDRESS_LINE_1")),
+			@AttributeOverride(name = "addressLine2", column = @Column(name = "USER_ADDRESS_LINE_2")) })
+	private List<Address> addresses = new ArrayList<Address>();
+	
+	@Column(name = "LAST_UPDATED_DATE")
+	private Date lastUpdatedDate;
+
+	@Column(name = "LAST_UPDATED_BY")
+	private String lastUpdatedBy;
 	
 	public Long getUserId() {
 		return userId;
@@ -155,12 +154,14 @@ public class User {
 		this.age = age;
 	}
 
-	public List<Address> getAddress() {
-		return address;
+	
+
+	public List<Address> getAddresses() {
+		return addresses;
 	}
 
-	public void setAddress(List<Address> address) {
-		this.address = address;
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
 	}
 
 	public Credential getCredential() {
@@ -170,4 +171,22 @@ public class User {
 	public void setCredential(Credential credential) {
 		this.credential = credential;
 	}
+
+	public Date getLastUpdatedDate() {
+		return lastUpdatedDate;
+	}
+
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
+		this.lastUpdatedDate = lastUpdatedDate;
+	}
+
+	public String getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+
+	public void setLastUpdatedBy(String lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
+	}
+	
+	
 }
