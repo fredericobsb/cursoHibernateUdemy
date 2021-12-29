@@ -162,4 +162,12 @@ public class User {
 	public void setAddress(List<Address> address) {
 		this.address = address;
 	}
+
+	public Credential getCredential() {
+		return credential;
+	}
+
+	public void setCredential(Credential credential) {
+		this.credential = credential;
+	}
 }

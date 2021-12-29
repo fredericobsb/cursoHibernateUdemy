@@ -93,6 +93,7 @@ public class Application {
 		credential.setPassword("password 22334");
 		credential.setUserName("arroh credential 777");
 		credential.setUser(user);
+		user.setCredential(credential);
 		
 		session.save(credential);
 		transaction.commit();
