@@ -7,6 +7,7 @@ import org.hibernate.Session;
 
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
+import com.infiniteskills.data.entities.Budget;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
@@ -18,13 +19,20 @@ public class Application {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			org.hibernate.Transaction transaction = session.beginTransaction();
-			Account account = createNewAccount();
-			account.getTransactions().add(createNewBeltPurchase(account));
-			account.getTransactions().add(createShoePurchase(account));
-			session.save(account);
 			
+			Account account = createNewAccount();
+
+			Budget budget = new Budget();
+			budget.setGoalAmount(new BigDecimal("10000.00"));
+			budget.setName("Emergency Fund");
+			budget.setPeriod("Yearly");
+			
+			budget.getTransactions().add(createNewBeltPurchase(account));
+			budget.getTransactions().add(createShoePurchase(account));
+			
+			session.save(budget);
 			transaction.commit();
-		
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

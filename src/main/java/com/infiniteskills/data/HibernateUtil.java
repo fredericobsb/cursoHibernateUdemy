@@ -5,6 +5,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import com.infiniteskills.data.entities.Account;
+import com.infiniteskills.data.entities.Budget;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
@@ -21,6 +22,7 @@ public class HibernateUtil {
 			configuration.addAnnotatedClass(Credential.class);
 			configuration.addAnnotatedClass(Account.class);
 			configuration.addAnnotatedClass(Transaction.class);
+			configuration.addAnnotatedClass(Budget.class);
 			return configuration.buildSessionFactory(new StandardServiceRegistryBuilder().build());
 		}catch(Exception e) {
 			e.printStackTrace();
