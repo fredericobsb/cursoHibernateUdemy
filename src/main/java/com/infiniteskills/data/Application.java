@@ -1,107 +1,29 @@
 package com.infiniteskills.data;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+
+import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Credential;
+import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
 
+//Resultado do hibernate no fim da classe
 public class Application {
 
 	public static void main(String[] args) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			Transaction transaction = session.beginTransaction();
-		
-		/*==> testando a conexao
-		session.beginTransaction();
-		session.close();
-		*/
-		
-		/*
-		session.getTransaction().begin();
-		User user = new User();
-		user.setBirthDate(getMyBirthDay());
-		user.setCreatedBy("kevin");
-		user.setCreatedDate(new Date());
-		user.setEmailAddress("kevin@gmail.com");
-		user.setFirstName("Kevin 123");
-		user.setLastName("da silva 123");
-		user.setLastUpdateBy("kevin arroh");
-		user.setLastUpdateDate(new Date());
-		
-		session.save(user);
-		session.getTransaction().commit();
-		session.refresh(user);
-		System.out.println(user.getAge());
-		/*
-		session.beginTransaction();
-		User dbUser = (User) session.get(User.class, user.getUserId());
-		dbUser.setFirstName("ARROOOOOOH");
-		session.update(dbUser);
-		session.getTransaction().commit();
-		session.close();
-		*/
-		
-			// @Embedded e @Embebedable
-		/*
-		Address address = new Address("New York city", "75134290", "NY");
-		Bank bank = new Bank("Federal trust",address, false, "Fred ramos",new Date(),"Kevvin devito", new Date());
-		*/
-		
-		/*
-		// @ElementCollection e @CollectionTable
-		Bank bank = new Bank();
-		bank.setName("Federal trust");
-		Address end = new Address();
-		end.setCity("New york");
-		end.setState("NY");
-		end.setZipCode("74555687");
-		bank.setAddress(end);
-		bank.setCreatedBy("kevin");
-		bank.setCreatedDate(new Date());
-		bank.getContacts().put("Chefe", "Frederico");
-		bank.getContacts().put("Secretaria", "Mary");
-		*/
-		/*
-		User user = new User();
-		Address end1 = new Address();
-		Address end2 = new Address();
-		setAddressFields(end1);
-		setAddressFields2(end2);
-		user.getAddress().add(end1);
-		user.getAddress().add(end2);
-		setUserFields(user);
-		
-		session.save(user);
-		transaction.commit();
-		*/
-		User user  = new User();
-		user.setFirstName("Kevin 33456");
-		user.setLastName("Kevin last name 7789");
-		user.setAge(20);
-		user.setBirthDate(getMyBirthDay());
-		user.setCreatedBy("Fred 556");
-		user.setCreatedDate(new Date());
-		user.setEmailAddress("fred@gmail.com");
-		user.setLastUpdateDate(new Date());
-		user.setLastUpdateBy("fred 556");
-		
-		Credential credential = new Credential();
-		credential.setPassword("password 22334");
-		credential.setUserName("arroh credential 777");
-		credential.setUser(user);
-		user.setCredential(credential);
-		
-		session.save(credential);
-		transaction.commit();
-		
-		User dbUser = (User) session.get(User.class, credential.getUser().getUserId());
-		System.out.println(dbUser.getFirstName());
-		
-		
+			org.hibernate.Transaction transaction = session.beginTransaction();
+			Account account = createNewAccount();
+			account.getTransactions().add(createNewBeltPurchase(account));
+			account.getTransactions().add(createShoePurchase(account));
+			session.save(account);
+			
+			transaction.commit();
 		
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -112,33 +34,58 @@ public class Application {
 		}
 	}
 	
-	private static Date getMyBirthDay() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.YEAR, 1984);
-		calendar.set(Calendar.MONTH, 6);
-		calendar.set(Calendar.DATE, 19);
-		return calendar.getTime();
+	private static Transaction createNewBeltPurchase(Account account) {
+		Transaction beltPurchase = new Transaction();
+		beltPurchase.setAccount(account);
+		beltPurchase.setTitle("Dress Belt");
+		beltPurchase.setAmount(new BigDecimal("50.00"));
+		beltPurchase.setClosingBalance(new BigDecimal("0.00"));
+		beltPurchase.setCreatedBy("Kevin Bowersox");
+		beltPurchase.setCreatedDate(new Date());
+		beltPurchase.setInitialBalance(new BigDecimal("0.00"));
+		beltPurchase.setLastUpdatedBy("Kevin Bowersox");
+		beltPurchase.setLastUpdatedDate(new Date());
+		beltPurchase.setNotes("New Dress Belt");
+		beltPurchase.setTransactionType("Debit");
+		return beltPurchase;
 	}
-	
-	private static void setAddressFields(Address end) {
-		end.setAddressLine1("Line 1");
-		end.setAddressLine2("Line 2");
-		end.setCity("New York");
-		end.setState("NY");
-		end.setZipCode("80000000");
+
+	private static Transaction createShoePurchase(Account account) {
+		Transaction shoePurchase = new Transaction();
+		shoePurchase.setAccount(account);
+		shoePurchase.setTitle("Work Shoes");
+		shoePurchase.setAmount(new BigDecimal("100.00"));
+		shoePurchase.setClosingBalance(new BigDecimal("0.00"));
+		shoePurchase.setCreatedBy("Kevin Bowersox");
+		shoePurchase.setCreatedDate(new Date());
+		shoePurchase.setInitialBalance(new BigDecimal("0.00"));
+		shoePurchase.setLastUpdatedBy("Kevin Bowersox");
+		shoePurchase.setLastUpdatedDate(new Date());
+		shoePurchase.setNotes("Nice Pair of Shoes");
+		shoePurchase.setTransactionType("Debit");
+		return shoePurchase;
 	}
-	
-	private static void setAddressFields2(Address end) {
-		end.setAddressLine1("Line 3");
-		end.setAddressLine2("Line 4");
-		end.setCity("New York 2");
-		end.setState("NY 2");
-		end.setZipCode("90000900");
-	}
-	
-	private static void setUserFields(User user) {
-		user.setAge(22);
-		user.setBirthDate(new Date());
-		user.setFirstName("Fred arroh");
+
+	private static Account createNewAccount() {
+		Account account = new Account();
+		account.setCloseDate(new Date());
+		account.setOpenDate(new Date());
+		account.setCreatedBy("Kevin Bowersox");
+		account.setInitialBalance(new BigDecimal("50.00"));
+		account.setName("Savings Account");
+		account.setCurrentBalance(new BigDecimal("100.00"));
+		account.setLastUpdatedBy("Kevin Bowersox");
+		account.setLastUpdatedDate(new Date());
+		account.setCreatedDate(new Date());
+		return account;
 	}
 }
+
+
+/*
+Hibernate: insert into ACCOUNT (CURRENT_BALANCE, INITIAL_BALANCE, NAME, OPEN_DATE) values (?, ?, ?, ?)
+Hibernate: insert into TRANSACTION (AMOUNT, CLOSING_BALANCE, CREATED_BY, CREATED_DATE, INITIAL_BALANCE, LAST_UPDATED_BY, LAST_UPDATED_DATE, NOTES, TITLE, TRANSACTION_TYPE, ACCOUNT_ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: insert into TRANSACTION (AMOUNT, CLOSING_BALANCE, CREATED_BY, CREATED_DATE, INITIAL_BALANCE, LAST_UPDATED_BY, LAST_UPDATED_DATE, NOTES, TITLE, TRANSACTION_TYPE, ACCOUNT_ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: update TRANSACTION set ACCOUNT_ID=? where TRANSACTION_ID=?
+Hibernate: update TRANSACTION set ACCOUNT_ID=? where TRANSACTION_ID=?
+*/

@@ -20,6 +20,10 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "TRANSACTION_ID")
 	private Long transactionId;
+	
+	@ManyToOne
+	@JoinColumn(name="ACCOUNT_ID")
+	private Account account;
 
 	@Column(name = "TRANSACTION_TYPE")
 	private String transactionType;
@@ -137,6 +141,14 @@ public class Transaction {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 	
 	
