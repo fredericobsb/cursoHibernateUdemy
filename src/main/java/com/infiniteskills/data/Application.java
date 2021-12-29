@@ -28,16 +28,21 @@ public class Application {
 			
 			account.getUsers().add(user);
 			account.getUsers().add(user2);
+			user.getAccounts().add(account);
+			user2.getAccounts().add(account);			
+			
 			account2.getUsers().add(user);
 			account2.getUsers().add(user2);
+			user.getAccounts().add(account2);
+			user2.getAccounts().add(account2);
 			
-			session.save(account);
-			session.save(account2);
+			session.save(user);
+			session.save(user2);
 			
 			transaction.commit();
 			
-			Account dbAccount = (Account) session.get(Account.class, account.getAccountId());
-			System.out.println(dbAccount.getUsers().iterator().next().getEmailAddress());
+			User dbUser = (User) session.get(User.class, user.getUserId());
+			System.out.println(dbUser.getAccounts().iterator().next().getName());
 			
 		}catch(Exception e) {
 			e.printStackTrace();
