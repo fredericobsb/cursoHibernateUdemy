@@ -30,11 +30,25 @@ public class Application {
 			 tx = em.getTransaction();
 			 tx.begin();
 			 
-			 Bank bank = em.find(Bank.class, 2L);
+			 Bank bank = em.find(Bank.class, 3L);
 			 System.out.println(em.contains(bank));
-			 em.remove(bank);
+			 /* quando chamamos esse metodo clear, todas entidades que estão no contexto de persistencia
+			 ficam detached.
+			 */
+			 em.clear();
 			 System.out.println(em.contains(bank));
+			 
+			 bank = em.find(Bank.class, 3L);
+			 em.detach(bank);//remove a entidade do contexto de persistencia
+			 System.out.println(em.contains(bank));
+			 
+			 System.out.println(bank.getName());
+			 bank.setName("Banco da Detached alterado");
+			 Bank bank2 = em.merge(bank);
+			 
+			 bank.setName("somehitng else2");//Alteracoes ignoradas porque a entidade está Detached.
 			 tx.commit();
+			 
 		}catch(Exception e) {
 			tx.rollback();
 		}finally {
