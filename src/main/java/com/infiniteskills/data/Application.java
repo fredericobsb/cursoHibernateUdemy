@@ -19,7 +19,9 @@ import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Bond;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Currency;
+import com.infiniteskills.data.entities.Investment;
 import com.infiniteskills.data.entities.Market;
+import com.infiniteskills.data.entities.Portfolio;
 import com.infiniteskills.data.entities.Stock;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
@@ -39,14 +41,30 @@ public class Application {
 			session = sessionFactory.openSession();
 			tx = session.beginTransaction();
 			
-			Stock stock = createStock();
-			session.save(stock);
-		
-			Bond bond = createBond();
-			session.save(bond);
+			Portfolio portfolio= new Portfolio();
+			portfolio.setName("First Investments");
 			
+		    Stock stock = createStock();		
+		    stock.setPortfolio(portfolio);
+		    
+		    Bond bond = createBond();
+		    bond.setPortfolio(portfolio);
+		
+			portfolio.getInvestements().add(stock);
+			portfolio.getInvestements().add(bond);
+			
+			session.save(stock);
+			session.save(bond);
+
 			tx.commit();
-						
+			
+			Portfolio dbPortfolio = (Portfolio) session.get(Portfolio.class, portfolio.getPortfolioId());
+			session.refresh(dbPortfolio);
+			
+			for(Investment i:dbPortfolio.getInvestements()){
+				System.out.println(i.getName());
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();

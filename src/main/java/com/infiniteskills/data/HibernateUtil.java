@@ -11,6 +11,7 @@ import com.infiniteskills.data.entities.Budget;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Currency;
 import com.infiniteskills.data.entities.Market;
+import com.infiniteskills.data.entities.Portfolio;
 import com.infiniteskills.data.entities.Stock;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
@@ -33,6 +34,7 @@ public class HibernateUtil {
 			configuration.addAnnotatedClass(Market.class);
 			configuration.addAnnotatedClass(Stock.class);
 			configuration.addAnnotatedClass(Bond.class);
+			configuration.addAnnotatedClass(Portfolio.class);
 			return configuration.buildSessionFactory(new StandardServiceRegistryBuilder().build());
 		}catch(Exception e) {
 			e.printStackTrace();

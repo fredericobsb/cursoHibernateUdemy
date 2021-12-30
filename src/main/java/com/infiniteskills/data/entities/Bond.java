@@ -15,10 +15,7 @@ import javax.persistence.TemporalType;
 @Table(name="BOND")
 public class Bond extends Investment{
 
-	@Id
-	@GeneratedValue
-	@Column(name = "BOND_ID")
-	private Long bondId;
+	
 
 	@Column(name = "VALUE")
 	private BigDecimal value;
@@ -30,13 +27,7 @@ public class Bond extends Investment{
 	@Column(name = "MATURITY_DATE")
 	private Date maturityDate;
 
-	public Long getBondId() {
-		return bondId;
-	}
-
-	public void setBondId(Long bondId) {
-		this.bondId = bondId;
-	}
+	
 
 	public BigDecimal getValue() {
 		return value;
