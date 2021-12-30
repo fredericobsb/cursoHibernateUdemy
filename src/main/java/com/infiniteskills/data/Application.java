@@ -21,22 +21,24 @@ public class Application {
 
 	public static void main(String[] args) {
 		
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("infinite-finances");
-		EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		
-		Bank bank = em.find(Bank.class, 2L);
-		//Se tentar buscar uma entidade que nao existe com find, volta null, mas nao lança exceção.
-		Bank bank2 = em.find(Bank.class, 12345L);
-		
-		System.out.println(em.contains(bank));
-		System.out.println(bank.getName());
-		System.out.println(em.contains(bank2));
-		
-		tx.commit();
-		em.close();
-		emf.close();
+		EntityManagerFactory emf = null;
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		try {
+			 emf = Persistence.createEntityManagerFactory("infinite-finances");
+			 em = emf.createEntityManager();
+			 tx = em.getTransaction();
+			 tx.begin();
+			 
+			 Bank bank = em.find(Bank.class, 2L);
+			 bank.setName("Another demonstratin");
+			 tx.commit();
+		}catch(Exception e) {
+			tx.rollback();
+		}finally {
+			em.close();
+			emf.close();
+		}
 	}
 	
 	private static User createUser() {
