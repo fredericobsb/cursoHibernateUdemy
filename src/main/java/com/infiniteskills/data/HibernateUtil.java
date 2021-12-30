@@ -9,6 +9,7 @@ import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Budget;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Currency;
+import com.infiniteskills.data.entities.Market;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
 
@@ -27,6 +28,7 @@ public class HibernateUtil {
 			configuration.addAnnotatedClass(Budget.class);
 			configuration.addAnnotatedClass(Bank.class);
 			configuration.addAnnotatedClass(Currency.class);
+			configuration.addAnnotatedClass(Market.class);
 			return configuration.buildSessionFactory(new StandardServiceRegistryBuilder().build());
 		}catch(Exception e) {
 			e.printStackTrace();

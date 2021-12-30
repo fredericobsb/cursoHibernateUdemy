@@ -17,6 +17,7 @@ import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Currency;
+import com.infiniteskills.data.entities.Market;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
 import com.infiniteskills.data.entities.ids.CurrencyId;
@@ -28,38 +29,32 @@ public class Application {
 		
 		SessionFactory sessionFactory = null;
 		Session session = null;
-		Session session2 = null;
 		org.hibernate.Transaction tx = null;
-		org.hibernate.Transaction tx2 = null;
+		
 		try {
 			sessionFactory = HibernateUtil.getSessionFactory();
 			session = sessionFactory.openSession();
 			tx = session.beginTransaction();
 
 			Currency currency = new Currency();
-			currency.setCountryName("United States");
-			currency.setName("Dollar");
-			currency.setSymbol("$");
+			currency.setCountryName("United Kingdom3");
+			currency.setName("Pound");
+			currency.setSymbol("Pound sign");
 
-			session.persist(currency);
-			tx.commit();
-
-			session2 = sessionFactory.openSession();
-			tx2 = session2.beginTransaction();
-
-			Currency dbCurrency = (Currency) session2.get(Currency.class,
-					new CurrencyId("Dollar", "United States"));
-			System.out.println(dbCurrency.getName());
+			Market market = new Market();
+			market.setMarketName("London Stock Exchange");
+			market.setCurrency(currency);
 			
-			tx2.commit();
+			session.persist(market);
+			tx.commit();
+			
+			Market dbMarket = (Market) session.get(Market.class, market.getMarketId());
+			System.out.println(dbMarket.getCurrency().getName());
 			
 			 
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-			if (tx2 != null) {
-				tx2.rollback();
-			}
 		} finally {
 			session.close();
 			sessionFactory.close();
