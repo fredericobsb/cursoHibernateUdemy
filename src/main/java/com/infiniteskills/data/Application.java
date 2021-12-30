@@ -21,10 +21,11 @@ public class Application {
 			org.hibernate.Transaction transaction = session.beginTransaction();
 			
 			Bank bank = (Bank) session.get(Bank.class, 1L);
-			System.out.println("Metodo executado");
-			System.out.println(bank.getName());
-			transaction.commit();
+			bank.setName("Banco arroh");
+			bank.setLastUpdatedBy("super arroh");
+			bank.setLastUpdatedDate(new Date());
 			
+			transaction.commit();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
