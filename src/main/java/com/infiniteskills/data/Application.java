@@ -15,18 +15,29 @@ import com.infiniteskills.data.entities.User;
 public class Application {
 
 	public static void main(String[] args) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		
+		Session session = null;
 		try {
+			session = HibernateUtil.getSessionFactory().openSession();
 			org.hibernate.Transaction transaction = session.beginTransaction();
-			
-			Bank bank = (Bank) session.get(Bank.class, 1L);
+			Bank bank = (Bank) session.get(Bank.class, 2L);
+			System.out.println(transaction.isActive());
 			System.out.println(session.contains(bank));
-			session.delete(bank);
-			System.out.println("metodo chamado");
-			System.out.println(session.contains(bank));
-			
 			transaction.commit();
+			System.out.println(transaction.isActive());
+			System.out.println(session.contains(bank));
+			session.close();
+			//System.out.println(session.contains(bank));//SessionException -> Session is closed!
+			
+			Session session2 = HibernateUtil.getSessionFactory().openSession();
+			org.hibernate.Transaction transaction2 = session2.beginTransaction();
+			
+			System.out.println(session2.contains(bank));
+			session2.update(bank);
+			bank.setName("Tesando o bank");
+			System.out.println(session2.contains(bank));
+			
+			transaction2.commit();
+			session2.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
