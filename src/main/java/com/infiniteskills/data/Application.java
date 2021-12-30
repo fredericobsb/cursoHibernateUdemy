@@ -2,47 +2,40 @@ package com.infiniteskills.data;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import org.hibernate.Session;
-
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
-import com.infiniteskills.data.entities.Budget;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
 
-//Resultado do hibernate no fim da classe
+
 public class Application {
 
 	public static void main(String[] args) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		
+		Account account = createNewAccount();
+		Transaction trans1 = createNewBeltPurchase(account);
+		Transaction trans2 = createShoePurchase(account);
+		account.getTransactions().add(trans1);
+		account.getTransactions().add(trans2);
+		
+		System.out.println(session.contains(account));
+		System.out.println(session.contains(trans1));
+		System.out.println(session.contains(trans2));
+		
 		try {
 			org.hibernate.Transaction transaction = session.beginTransaction();
 			
-			Account account = createNewAccount();
-			Account account2 = createNewAccount();
-			User user = createUser();
-			User user2 = createUser();
-			
-			account.getUsers().add(user);
-			account.getUsers().add(user2);
-			user.getAccounts().add(account);
-			user2.getAccounts().add(account);			
-			
-			account2.getUsers().add(user);
-			account2.getUsers().add(user2);
-			user.getAccounts().add(account2);
-			user2.getAccounts().add(account2);
-			
-			session.save(user);
-			session.save(user2);
-			
+			session.save(account);
+
+			System.out.println(session.contains(account));
+			System.out.println(session.contains(trans1));
+			System.out.println(session.contains(trans2));
+
 			transaction.commit();
-			
-			User dbUser = (User) session.get(User.class, user.getUserId());
-			System.out.println(dbUser.getAccounts().iterator().next().getName());
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -134,12 +127,3 @@ public class Application {
 		return account;
 	}
 }
-
-
-/*
-Hibernate: insert into ACCOUNT (CURRENT_BALANCE, INITIAL_BALANCE, NAME, OPEN_DATE) values (?, ?, ?, ?)
-Hibernate: insert into TRANSACTION (AMOUNT, CLOSING_BALANCE, CREATED_BY, CREATED_DATE, INITIAL_BALANCE, LAST_UPDATED_BY, LAST_UPDATED_DATE, NOTES, TITLE, TRANSACTION_TYPE, ACCOUNT_ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-Hibernate: insert into TRANSACTION (AMOUNT, CLOSING_BALANCE, CREATED_BY, CREATED_DATE, INITIAL_BALANCE, LAST_UPDATED_BY, LAST_UPDATED_DATE, NOTES, TITLE, TRANSACTION_TYPE, ACCOUNT_ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-Hibernate: update TRANSACTION set ACCOUNT_ID=? where TRANSACTION_ID=?
-Hibernate: update TRANSACTION set ACCOUNT_ID=? where TRANSACTION_ID=?
-*/
