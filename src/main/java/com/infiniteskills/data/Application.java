@@ -9,51 +9,60 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Credential;
+import com.infiniteskills.data.entities.Currency;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
+import com.infiniteskills.data.entities.ids.CurrencyId;
 
 //flush => Faz (força) a sincronizacao entre o contexto de persistencia e o banco de dados.
 public class Application {
 
 	public static void main(String[] args) {
 		
-		EntityManagerFactory emf = null;
-		EntityManager em = null;
-		EntityTransaction tx = null;
+		SessionFactory sessionFactory = null;
+		Session session = null;
+		Session session2 = null;
+		org.hibernate.Transaction tx = null;
+		org.hibernate.Transaction tx2 = null;
 		try {
-			 emf = Persistence.createEntityManagerFactory("infinite-finances");
-			 em = emf.createEntityManager();
-			 tx = em.getTransaction();
-			 tx.begin();
-			 
-			 Bank bank = em.find(Bank.class, 3L);
-			 System.out.println(em.contains(bank));
-			 /* quando chamamos esse metodo clear, todas entidades que estão no contexto de persistencia
-			 ficam detached.
-			 */
-			 em.clear();
-			 System.out.println(em.contains(bank));
-			 
-			 bank = em.find(Bank.class, 3L);
-			 em.detach(bank);//remove a entidade do contexto de persistencia
-			 System.out.println(em.contains(bank));
-			 
-			 System.out.println(bank.getName());
-			 bank.setName("Banco da Detached alterado");
-			 Bank bank2 = em.merge(bank);
-			 
-			 bank.setName("somehitng else2");//Alteracoes ignoradas porque a entidade está Detached.
-			 tx.commit();
+			sessionFactory = HibernateUtil.getSessionFactory();
+			session = sessionFactory.openSession();
+			tx = session.beginTransaction();
+
+			Currency currency = new Currency();
+			currency.setCountryName("United States");
+			currency.setName("Dollar");
+			currency.setSymbol("$");
+
+			session.persist(currency);
+			tx.commit();
+
+			session2 = sessionFactory.openSession();
+			tx2 = session2.beginTransaction();
+
+			Currency dbCurrency = (Currency) session2.get(Currency.class,
+					new CurrencyId("Dollar", "United States"));
+			System.out.println(dbCurrency.getName());
+			
+			tx2.commit();
+			
 			 
 		}catch(Exception e) {
+			e.printStackTrace();
 			tx.rollback();
-		}finally {
-			em.close();
-			emf.close();
+			if (tx2 != null) {
+				tx2.rollback();
+			}
+		} finally {
+			session.close();
+			sessionFactory.close();
 		}
 	}
 	
