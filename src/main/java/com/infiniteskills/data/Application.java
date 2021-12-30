@@ -3,7 +3,12 @@ package com.infiniteskills.data;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
-import org.hibernate.Session;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
@@ -15,22 +20,18 @@ import com.infiniteskills.data.entities.User;
 public class Application {
 
 	public static void main(String[] args) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		org.hibernate.Transaction transaction = session.beginTransaction();
-		try {
-			Bank bank = (Bank) session.get(Bank.class, 2L);
-			bank.setName("Nome do banco alteradeo");
-			session.flush();
-			
-			bank.setAddressLine1("OUtro endereco");
-			transaction.commit();
-		}catch(Exception e) {
-			transaction.rollback();
-			e.printStackTrace();
-		}
-		finally {
-			HibernateUtil.getSessionFactory().close();
-		}
+		
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("infinite-finances");
+		EntityManager em = emf.createEntityManager();
+		
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		
+		Bank bank = createBank();
+		em.persist(bank);
+		tx.commit();
+		em.close();
+		emf.close();
 	}
 	
 	private static User createUser() {
