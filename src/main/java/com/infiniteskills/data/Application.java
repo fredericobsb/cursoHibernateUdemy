@@ -19,30 +19,23 @@ public class Application {
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			org.hibernate.Transaction transaction = session.beginTransaction();
-			Bank bank = (Bank) session.get(Bank.class, 2L);
-			System.out.println(transaction.isActive());
-			System.out.println(session.contains(bank));
+			Bank detachedBank = (Bank) session.get(Bank.class, 2L);
 			transaction.commit();
-			System.out.println(transaction.isActive());
-			System.out.println(session.contains(bank));
 			session.close();
-			//System.out.println(session.contains(bank));//SessionException -> Session is closed!
+			Bank transientBank = createBank();
 			
 			Session session2 = HibernateUtil.getSessionFactory().openSession();
 			org.hibernate.Transaction transaction2 = session2.beginTransaction();
 			
-			System.out.println(session2.contains(bank));
-			session2.update(bank);
-			bank.setName("Tesando o bank");
-			System.out.println(session2.contains(bank));
-			
+			session2.saveOrUpdate(transientBank);
+			session2.saveOrUpdate(detachedBank);
+			detachedBank.setName("Test bank 2");
 			transaction2.commit();
 			session2.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		finally {
-			session.close();
 			HibernateUtil.getSessionFactory().close();
 		}
 	}
@@ -126,5 +119,22 @@ public class Application {
 		account.setLastUpdatedDate(new Date());
 		account.setCreatedDate(new Date());
 		return account;
+	}
+	
+	private static Bank createBank() {
+		Bank bank = new Bank();
+		bank.setName("First United Federal");
+		bank.setAddressLine1("103 Washington Plaza");
+		bank.setAddressLine2("Suite 332");
+		bank.setAddressType("PRIMARY");
+		bank.setCity("New York");
+		bank.setCreatedBy("Kevin Bowersox");
+		bank.setCreatedDate(new Date());
+		bank.setInternational(false);
+		bank.setLastUpdatedBy("Kevin Bowersox");
+		bank.setLastUpdatedDate(new Date());
+		bank.setState("NY");
+		bank.setZipCode("10000");
+		return bank;
 	}
 }

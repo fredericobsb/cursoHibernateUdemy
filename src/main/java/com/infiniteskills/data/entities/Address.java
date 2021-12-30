@@ -7,10 +7,10 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Address {
 	
-	@Column(name="ADDRESS_LINE1")
+	@Column(name="ADDRESS_LINE_1")
 	private String addressLine1;
 	
-	@Column(name="ADDRESS_LINE2")
+	@Column(name="ADDRESS_LINE_2")
 	private String addressLine2;
 	
 	@Column(name="CITY")
