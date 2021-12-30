@@ -16,14 +16,16 @@ import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.AccountType;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
+import com.infiniteskills.data.entities.Bond;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Currency;
 import com.infiniteskills.data.entities.Market;
+import com.infiniteskills.data.entities.Stock;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
 import com.infiniteskills.data.entities.ids.CurrencyId;
 
-//flush => Faz (força) a sincronizacao entre o contexto de persistencia e o banco de dados.
+
 public class Application {
 
 	public static void main(String[] args) {
@@ -37,16 +39,14 @@ public class Application {
 			session = sessionFactory.openSession();
 			tx = session.beginTransaction();
 			
-			Account account = createNewAccount();
-			account.setAccountType(AccountType.SAVINGS);
+			Stock stock = createStock();
+			session.save(stock);
+		
+			Bond bond = createBond();
+			session.save(bond);
 			
-			session.save(account);
 			tx.commit();
-			
-			Account dbAccount = (Account) session.get(Account.class, account.getAccountId());
-			System.out.println(dbAccount.getName());
-			System.out.println(dbAccount.getAccountType());
-			
+						
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
@@ -56,12 +56,33 @@ public class Application {
 		}
 	}
 	
+	private static Bond createBond() {
+		Bond bond = new Bond();
+		bond.setInterestRate(new BigDecimal("123.22"));
+		bond.setIssuer("JP Morgan Chase");
+		bond.setMaturityDate(new Date());
+		bond.setPurchaseDate(new Date());
+		bond.setName("Long Term Bond Purchases");
+		bond.setValue(new BigDecimal("10.22"));
+		return bond;
+	}
+
+	private static Stock createStock(){
+		Stock stock = new Stock();
+		stock.setIssuer("Allen Edmonds");
+		stock.setName("Private American Stock Purchases");
+		stock.setPurchaseDate(new Date());
+		stock.setQuantity(new BigDecimal("1922"));
+		stock.setSharePrice(new BigDecimal("100.00"));
+		return stock;
+	}
+	
 	private static User createUser() {
 		User user = new User();
 		Address address = createAddress();
 		user.setAddresses(Arrays.asList(new Address[]{createAddress()}));
 		user.setBirthDate(new Date());
-		user.setCreatedBy("Kevin Bowersox");
+		user.setCreatedBy("Kevin Bowersox 666");
 		user.setCreatedDate(new Date());
 		user.setCredential(createCredential(user));
 		user.setEmailAddress("test@test.com");
@@ -127,7 +148,7 @@ public class Application {
 		Account account = new Account();
 		account.setCloseDate(new Date());
 		account.setOpenDate(new Date());
-		account.setCreatedBy("Kevin Bowersox");
+		account.setCreatedBy("Kevin Bowersox 777");
 		account.setInitialBalance(new BigDecimal("50.00"));
 		account.setName("Savings Account");
 		account.setCurrentBalance(new BigDecimal("100.00"));
