@@ -27,6 +27,13 @@ import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
 import com.infiniteskills.data.entities.ids.CurrencyId;
 
+/*
+  JPA single table strategy é a estrategia mais usada para mapear herança, além de ser
+  uma das estratégias mais performáticas que podemos usar.
+   
+  
+  Essa estrátegia vai juntar os campos das tabelas Stock, Bond, e colocálos na tabela Investment.
+ */
 
 public class Application {
 
