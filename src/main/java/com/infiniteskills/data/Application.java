@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import com.infiniteskills.data.entities.Account;
+import com.infiniteskills.data.entities.AccountType;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Credential;
@@ -35,23 +36,17 @@ public class Application {
 			sessionFactory = HibernateUtil.getSessionFactory();
 			session = sessionFactory.openSession();
 			tx = session.beginTransaction();
-
-			Currency currency = new Currency();
-			currency.setCountryName("United Kingdom3");
-			currency.setName("Pound");
-			currency.setSymbol("Pound sign");
-
-			Market market = new Market();
-			market.setMarketName("London Stock Exchange");
-			market.setCurrency(currency);
 			
-			session.persist(market);
+			Account account = createNewAccount();
+			account.setAccountType(AccountType.SAVINGS);
+			
+			session.save(account);
 			tx.commit();
 			
-			Market dbMarket = (Market) session.get(Market.class, market.getMarketId());
-			System.out.println(dbMarket.getCurrency().getName());
+			Account dbAccount = (Account) session.get(Account.class, account.getAccountId());
+			System.out.println(dbAccount.getName());
+			System.out.println(dbAccount.getAccountType());
 			
-			 
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
