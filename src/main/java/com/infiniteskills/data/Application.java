@@ -6,6 +6,7 @@ import java.util.Date;
 import org.hibernate.Session;
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
+import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
@@ -16,25 +17,12 @@ public class Application {
 	public static void main(String[] args) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		Account account = createNewAccount();
-		Transaction trans1 = createNewBeltPurchase(account);
-		Transaction trans2 = createShoePurchase(account);
-		account.getTransactions().add(trans1);
-		account.getTransactions().add(trans2);
-		
-		System.out.println(session.contains(account));
-		System.out.println(session.contains(trans1));
-		System.out.println(session.contains(trans2));
-		
 		try {
 			org.hibernate.Transaction transaction = session.beginTransaction();
 			
-			session.save(account);
-
-			System.out.println(session.contains(account));
-			System.out.println(session.contains(trans1));
-			System.out.println(session.contains(trans2));
-
+			Bank bank = (Bank) session.get(Bank.class, 1L);
+			System.out.println("Metodo executado");
+			System.out.println(bank.getName());
 			transaction.commit();
 			
 		}catch(Exception e) {
