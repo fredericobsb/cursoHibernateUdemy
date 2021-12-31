@@ -3,6 +3,7 @@ package com.infiniteskills.data;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -19,19 +20,20 @@ public class HibernateApplication {
 		Session session = null;
 		org.hibernate.Transaction tx = null;
 
+		int pageNumber = 3;
+		int pageSize = 4;
+
 		try {
 			factory = HibernateUtil.getSessionFactory();
 			session = factory.openSession();
 			tx = session.beginTransaction();
 
-			Criterion criterion1 = Restrictions.le("amount", new BigDecimal(
-					"20.00"));
-			Criterion criterion2 = Restrictions.eq("transactionType",
-					"Withdrawl");
+			Criteria criteria = session.createCriteria(Transaction.class)
+					.addOrder(Order.asc("title"));
+			criteria.setFirstResult((pageNumber - 1) * pageSize);
+			criteria.setMaxResults(pageSize);
 
-			List<Transaction> transactions = session
-					.createCriteria(Transaction.class).add(Restrictions.and(criterion1, criterion2))
-					.addOrder(Order.desc("title")).list();
+			List<Transaction> transactions = criteria.list();
 
 			for (Transaction t : transactions) {
 				System.out.println(t.getTitle());

@@ -22,6 +22,9 @@ public class JpaApplication {
 		EntityManagerFactory factory = null;
 		EntityManager em = null;
 		EntityTransaction tx = null;
+		
+		int pageNumber = 1;
+		int pageSize = 5;
 
 		try {
 			factory = Persistence
@@ -35,14 +38,12 @@ public class JpaApplication {
 					.createQuery(Transaction.class);
 
 			Root<Transaction> root = criteriaQuery.from(Transaction.class);
-			Path<BigDecimal> amountPath = root.get("amount");
-			Path<String> transactionTypePath = root.get("transactionType");
+			criteriaQuery.select(root);
 
-			criteriaQuery.select(root).where(
-					cb.and(cb.le(amountPath, new BigDecimal("20.00")),
-							cb.equal(transactionTypePath, "Withdrawl")));
-			
 			TypedQuery<Transaction> query = em.createQuery(criteriaQuery);
+			query.setFirstResult((pageNumber - 1) * pageSize);
+			query.setMaxResults(pageSize);
+
 			List<Transaction> transactions = query.getResultList();
 
 			for (Transaction t : transactions) {
