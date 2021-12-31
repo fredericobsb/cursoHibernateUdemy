@@ -21,13 +21,15 @@ public class HqlApplication {
 			session = factory.openSession();
 			tx = session.beginTransaction();
 			
-			Query query = session.createQuery("select t from Transaction t");
-			List<Transaction> transactions = query.list();
+			Query query = session.createQuery("select t from Transaction t "
+					+ "where t.amount > 75 and t.transactionType = 'Withdrawl'");
 			
-			for(Transaction t:transactions){
+			List<Transaction> transactions = query.list();
+
+			for (Transaction t : transactions) {
 				System.out.println(t.getTitle());
 			}
-			
+
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();

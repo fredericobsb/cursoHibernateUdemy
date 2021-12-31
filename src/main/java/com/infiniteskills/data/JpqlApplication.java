@@ -25,13 +25,17 @@ public class JpqlApplication {
 			tx = em.getTransaction();
 			tx.begin();
 			
-			TypedQuery<Transaction> query = em.createQuery("from Transaction t order by t.title", Transaction.class);
-			List<Transaction> transactions = query.getResultList();
+			TypedQuery<Transaction> query = em.createQuery(
+					"from Transaction t"
+					+ " where (t.amount between 75 and 100) and t.title like '%s'"
+					+ " order by t.title", Transaction.class);
 			
-			for(Transaction t:transactions){
+			List<Transaction> transactions = query.getResultList();
+
+			for (Transaction t : transactions) {
 				System.out.println(t.getTitle());
 			}
-			
+
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();
