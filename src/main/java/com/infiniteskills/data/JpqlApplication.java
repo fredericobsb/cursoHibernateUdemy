@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.infiniteskills.data.entities.Account;
@@ -27,14 +28,17 @@ public class JpqlApplication {
 			tx = em.getTransaction();
 			tx.begin();
 			
-			TypedQuery<Account> query = em.createQuery("select distinct a from Transaction t"
-					+ " join t.account a "
-					+ "where t.amount > 500 and t.transactionType = 'Deposit'",Account.class);
+			//javax.persistence.Query
+			Query query = em.createQuery("select distinct t.account.name, "
+					+ "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
+					+ " from Transaction t"
+					+ " where t.amount > 500 and t.transactionType = 'Deposit'");
 			
-			List<Account> accounts = query.getResultList();
+			List<Object[]> accounts = query.getResultList();
 			
-			for(Account a:accounts){
-				System.out.println(a.getName());
+			for(Object[] a:accounts){
+				System.out.println(a[0]);
+				System.out.println(a[1]);
 			}
 			
 			tx.commit();

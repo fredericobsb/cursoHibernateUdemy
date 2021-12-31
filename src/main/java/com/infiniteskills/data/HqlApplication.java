@@ -23,8 +23,9 @@ public class HqlApplication {
 			session = factory.openSession();
 			tx = session.beginTransaction();
 			
+			//org.hibernate.Query
 			Query query = session.createQuery("select distinct t.account from Transaction t"
-					+ " where t.amount > 500 and t.transactionType = 'Deposit'");
+					+ " where t.amount > 500 and lower(t.transactionType) = 'deposit'");
 			
 			List<Account> accounts = query.list();
 			
