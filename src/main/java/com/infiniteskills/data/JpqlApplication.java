@@ -9,6 +9,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Transaction;
 
 public class JpqlApplication {
@@ -25,22 +26,17 @@ public class JpqlApplication {
 			em = factory.createEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
-// JPQL -> Parametros começam no indice 1, E NÃO NO ZERO ! ***********************************			
-			TypedQuery<Transaction> query = em.createQuery(
-					"from Transaction t"
-					+ " where (t.amount between ?1 and ?2) and t.title like '%s'"
-					+ " order by t.title", Transaction.class);
 			
-			// Se usar parametros com indices 0 e 1, o hibernate NAO FAZ A CONSULTA. 
-			query.setParameter(1, new BigDecimal("25"));
-			query.setParameter(2, new BigDecimal("59"));
+			TypedQuery<Account> query = em.createQuery("select distinct a from Transaction t"
+					+ " join t.account a "
+					+ "where t.amount > 500 and t.transactionType = 'Deposit'",Account.class);
 			
-			List<Transaction> transactions = query.getResultList();
-
-			for (Transaction t : transactions) {
-				System.out.println(t.getTitle());
+			List<Account> accounts = query.getResultList();
+			
+			for(Account a:accounts){
+				System.out.println(a.getName());
 			}
-
+			
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();
