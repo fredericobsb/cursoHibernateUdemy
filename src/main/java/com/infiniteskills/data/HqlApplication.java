@@ -1,5 +1,6 @@
 package com.infiniteskills.data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -22,14 +23,18 @@ public class HqlApplication {
 			tx = session.beginTransaction();
 			
 			Query query = session.createQuery("select t from Transaction t "
-					+ "where t.amount > 75 and t.transactionType = 'Withdrawl'");
+					+ "where t.amount > :amount and t.transactionType = 'Withdrawl'");
 			
+			query.setParameter("amount", new BigDecimal("10"));
 			List<Transaction> transactions = query.list();
-
-			for (Transaction t : transactions) {
-				System.out.println(t.getTitle());
-			}
-
+			tx.commit();
+			
+			tx = session.beginTransaction();
+			Query query2 = session.createQuery("select t from Transaction t "
+					+ "where t.amount > ? and t.transactionType = ?");
+			query2.setParameter(0, new BigDecimal("20.00"));
+			query2.setParameter(1, "Withdrawl");
+			List<Transaction> transactions2 = query2.list();
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();

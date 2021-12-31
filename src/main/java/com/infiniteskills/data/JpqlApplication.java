@@ -1,5 +1,6 @@
 package com.infiniteskills.data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -24,11 +25,15 @@ public class JpqlApplication {
 			em = factory.createEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
-			
+// JPQL -> Parametros começam no indice 1, E NÃO NO ZERO ! ***********************************			
 			TypedQuery<Transaction> query = em.createQuery(
 					"from Transaction t"
-					+ " where (t.amount between 75 and 100) and t.title like '%s'"
+					+ " where (t.amount between ?1 and ?2) and t.title like '%s'"
 					+ " order by t.title", Transaction.class);
+			
+			// Se usar parametros com indices 0 e 1, o hibernate NAO FAZ A CONSULTA. 
+			query.setParameter(1, new BigDecimal("25"));
+			query.setParameter(2, new BigDecimal("59"));
 			
 			List<Transaction> transactions = query.getResultList();
 
