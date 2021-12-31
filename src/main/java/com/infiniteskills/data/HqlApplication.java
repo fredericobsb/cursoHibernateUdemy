@@ -23,17 +23,17 @@ public class HqlApplication {
 			session = factory.openSession();
 			tx = session.beginTransaction();
 			
-			//org.hibernate.Query
-			Query query = session.createQuery("select distinct t.account from Transaction t"
-					+ " where t.amount > 500 and lower(t.transactionType) = 'deposit'");
-			
-			List<Account> accounts = query.list();
-			
-			for(Account a:accounts){
-				System.out.println(a.getName());
-			}
-			
-			tx.commit();
+//			Query query = session.createQuery("select distinct t.account from Transaction t"
+//			+ " where t.amount > 500 and lower(t.transactionType) = 'deposit'");
+
+		Query query = session.getNamedQuery("Account.largeDeposits");
+		List<Account> accounts = query.list();
+		
+		for(Account a:accounts){
+			System.out.println(a.getName());
+		}
+		
+		tx.commit();
 		}catch(Exception e){
 			tx.rollback();
 		}finally{

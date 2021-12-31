@@ -18,12 +18,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 
 @Entity
 @Table(name="ACCOUNT")
+@NamedQueries({
+	@NamedQuery(name="Account.largeDeposits", query="select distinct t.account from Transaction t"
+				+ " where t.amount > 500 and lower(t.transactionType) = 'deposit'"),
+	@NamedQuery(name="Account.byWithdrawlAmount", query="select distinct t.account.name, "
+					+ "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
+					+ " from Transaction t"
+					+ " where t.amount > :amount and t.transactionType = 'withdrawl'")
+})
 public class Account {
 	
 	@Id

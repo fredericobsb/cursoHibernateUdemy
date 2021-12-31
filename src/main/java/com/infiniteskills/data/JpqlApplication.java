@@ -28,20 +28,22 @@ public class JpqlApplication {
 			tx = em.getTransaction();
 			tx.begin();
 			
-			//javax.persistence.Query
-			Query query = em.createQuery("select distinct t.account.name, "
-					+ "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
-					+ " from Transaction t"
-					+ " where t.amount > 500 and t.transactionType = 'Deposit'");
-			
-			List<Object[]> accounts = query.getResultList();
-			
-			for(Object[] a:accounts){
-				System.out.println(a[0]);
-				System.out.println(a[1]);
-			}
-			
-			tx.commit();
+//			Query query = em.createQuery("select distinct t.account.name, "
+//			+ "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
+//			+ " from Transaction t"
+//			+ " where t.amount > :amount and t.transactionType = 'withdrawl'");
+	
+	Query query = em.createNamedQuery("Account.byWithdrawlAmount");
+	query.setParameter("amount", new BigDecimal("99"));
+	
+	List<Object[]> accounts = query.getResultList();
+	
+	for(Object[] a:accounts){
+		System.out.println(a[0]);
+		System.out.println(a[1]);
+	}
+	
+	tx.commit();
 		}catch(Exception e){
 			tx.rollback();
 		}finally{
